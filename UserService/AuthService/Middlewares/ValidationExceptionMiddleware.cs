@@ -1,8 +1,8 @@
-﻿namespace AuthAPI.Middlewares
+﻿namespace UserAPI.Middlewares
 {
-    using AuthAPI.Responses;
     using System.Net;
     using System.Text.Json;
+    using UserAPI.Responses;
 
     public class ValidationExceptionMiddleware
     {

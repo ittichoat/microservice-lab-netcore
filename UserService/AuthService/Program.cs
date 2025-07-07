@@ -1,13 +1,12 @@
-using AuthAPI.Middlewares;
-using AuthAPI.Validators;
-using BL.Services.Token;
-using BL.Services.User;
+using BL.Services;
 using DAL.Dependency;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using Jose;
+using UserAPI.Middlewares;
+using UserAPI.Validators;
 
-namespace AuthAPI
+namespace UserAPI
 {
     public static class Program
     {

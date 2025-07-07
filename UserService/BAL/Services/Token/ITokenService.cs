@@ -1,6 +1,6 @@
 ﻿using BL.Model;
 
-namespace BL.Services.Token
+namespace BL.Services
 {
     public interface ITokenService
     {

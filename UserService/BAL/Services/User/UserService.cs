@@ -3,7 +3,7 @@ using BL.Common;
 using BL.Model;
 using DAL.Repository.Interface;
 
-namespace BL.Services.User
+namespace BL.Services
 {
     public class UserService : IUserService
     {
@@ -44,5 +44,41 @@ namespace BL.Services.User
             var userDto = _mapper.Map<UserDto>(user);
             return Result<UserDto>.Ok(userDto);
         }
+
+        public async Task<List<UserDto>> GetAllAsync()
+        {
+            var users = await _repository.GetAllAsync();
+            return _mapper.Map<List<UserDto>>(users);
+        }
+
+        public async Task<UserDto?> GetByIdAsync(int id)
+        {
+            var user = await _repository.GetByIdAsync(id);
+            return user == null ? null : _mapper.Map<UserDto>(user);
+        }
+
+        public async Task<Result<UserDto>> UpdateAsync(int id, UpdateUserRequest request)
+        {
+            var user = await _repository.GetByIdAsync(id);
+            if (user == null)
+                return Result<UserDto>.Fail("User not found");
+
+            user.Email = request.Email ?? user.Email;
+            user.Username = request.Username ?? user.Username;
+
+            await _repository.UpdateUserAsync(user);
+            return Result<UserDto>.Ok(_mapper.Map<UserDto>(user));
+        }
+
+        public async Task<bool> DeleteAsync(int id)
+        {
+            var user = await _repository.GetByIdAsync(id);
+            if (user == null)
+                return false;
+
+            await _repository.DeleteUserAsync(user);
+            return true;
+        }
+
     }
 }

@@ -1,6 +1,6 @@
 ﻿using BL.Model;
 using FluentValidation;
-namespace AuthAPI.Validators
+namespace UserAPI.Validators
 {
 
     public class RegisterRequestValidator : AbstractValidator<RegisterRequest>

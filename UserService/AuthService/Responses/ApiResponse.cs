@@ -1,4 +1,4 @@
-﻿namespace AuthAPI.Responses;
+﻿namespace UserAPI.Responses;
 
 public class ApiResponse<T>
 {
