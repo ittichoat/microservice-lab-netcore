@@ -21,6 +21,7 @@ public class UserServiceTest
         _userService = new UserService(_repositoryMock.Object, _mapperMock.Object);
     }
 
+    #region RegisterAsync
     [Fact]
     public async Task RegisterAsync_Should_Fail_When_Username_Exists()
     {
@@ -67,6 +68,9 @@ public class UserServiceTest
         _repositoryMock.Verify(r => r.AddUserAsync(It.IsAny<User>()), Times.Once);
     }
 
+    #endregion
+
+    #region AuthenticateAsync
     [Fact]
     public async Task AuthenticateAsync_Should_Fail_When_User_Not_Found()
     {
@@ -132,4 +136,6 @@ public class UserServiceTest
         result.Data.Should().NotBeNull();
         result.Data.Username.Should().Be("testuser");
     }
+
+    #endregion AuthenticateAsync
 }
