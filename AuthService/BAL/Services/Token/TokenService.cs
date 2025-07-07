@@ -22,10 +22,10 @@ namespace BL.Services.Token
 
             var claims = new[]
             {
-            new Claim(JwtRegisteredClaimNames.Sub, user.Username),
-            new Claim(JwtRegisteredClaimNames.Email, user.Email),
-            new Claim("uid", user.Id.ToString())
-        };
+                new Claim(JwtRegisteredClaimNames.PreferredUsername, user.Username),
+                new Claim(JwtRegisteredClaimNames.Email, user.Email),
+                new Claim("uid", user.Id.ToString())
+            };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings["Key"]!));
 

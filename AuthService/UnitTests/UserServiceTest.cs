@@ -26,7 +26,8 @@ public class UserServiceTest
     {
         // Arrange
         var request = new RegisterRequest { Username = "testuser" };
-        _repositoryMock.Setup(r => r.GetByUsernameAsync(request.Username)).ReturnsAsync(new User());
+        _repositoryMock.Setup(r => r.GetByUsernameAsync(request.Username))
+                       .ReturnsAsync(new User());
 
         // Act
         var result = await _userService.RegisterAsync(request);
@@ -45,9 +46,15 @@ public class UserServiceTest
             Username = "uniqueuser",
             Password = "123456"
         };
-        _repositoryMock.Setup(r => r.GetByUsernameAsync(request.Username)).ReturnsAsync((User?)null);
-        _mapperMock.Setup(m => m.Map<User>(request)).Returns(new User { Username = request.Username });
-        _mapperMock.Setup(m => m.Map<UserDto>(It.IsAny<User>())).Returns(new UserDto { Username = request.Username });
+
+        _repositoryMock.Setup(r => r.GetByUsernameAsync(request.Username))
+                       .ReturnsAsync((User?)null);
+
+        _mapperMock.Setup(m => m.Map<User>(request))
+                   .Returns(new User { Username = request.Username });
+
+        _mapperMock.Setup(m => m.Map<UserDto>(It.IsAny<User>()))
+                   .Returns(new UserDto { Username = request.Username });
 
         // Act
         var result = await _userService.RegisterAsync(request);
@@ -56,6 +63,73 @@ public class UserServiceTest
         result.Success.Should().BeTrue();
         result.Data.Should().NotBeNull();
         result.Data.Username.Should().Be(request.Username);
+
         _repositoryMock.Verify(r => r.AddUserAsync(It.IsAny<User>()), Times.Once);
+    }
+
+    [Fact]
+    public async Task AuthenticateAsync_Should_Fail_When_User_Not_Found()
+    {
+        // Arrange
+        var request = new LoginRequest { Username = "unknown", Password = "any" };
+        _repositoryMock.Setup(r => r.GetByUsernameAsync(request.Username))
+                       .ReturnsAsync((User?)null);
+
+        // Act
+        var result = await _userService.AuthenticateAsync(request);
+
+        // Assert
+        result.Success.Should().BeFalse();
+        result.ErrorMessage.Should().Be("Invalid credentials");
+    }
+
+    [Fact]
+    public async Task AuthenticateAsync_Should_Fail_When_Password_Incorrect()
+    {
+        // Arrange
+        var user = new User
+        {
+            Username = "testuser",
+            PasswordHash = BCrypt.Net.BCrypt.HashPassword("correctpass")
+        };
+
+        var request = new LoginRequest { Username = "testuser", Password = "wrongpass" };
+
+        _repositoryMock.Setup(r => r.GetByUsernameAsync(request.Username))
+                       .ReturnsAsync(user);
+
+        // Act
+        var result = await _userService.AuthenticateAsync(request);
+
+        // Assert
+        result.Success.Should().BeFalse();
+        result.ErrorMessage.Should().Be("Invalid credentials");
+    }
+
+    [Fact]
+    public async Task AuthenticateAsync_Should_Succeed_When_Credentials_Are_Correct()
+    {
+        // Arrange
+        var user = new User
+        {
+            Username = "testuser",
+            PasswordHash = BCrypt.Net.BCrypt.HashPassword("123456")
+        };
+
+        var request = new LoginRequest { Username = "testuser", Password = "123456" };
+
+        _repositoryMock.Setup(r => r.GetByUsernameAsync(request.Username))
+                       .ReturnsAsync(user);
+
+        _mapperMock.Setup(m => m.Map<UserDto>(user))
+                   .Returns(new UserDto { Username = user.Username });
+
+        // Act
+        var result = await _userService.AuthenticateAsync(request);
+
+        // Assert
+        result.Success.Should().BeTrue();
+        result.Data.Should().NotBeNull();
+        result.Data.Username.Should().Be("testuser");
     }
 }
