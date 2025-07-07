@@ -65,6 +65,7 @@ namespace BL.Services
 
             user.Email = request.Email ?? user.Email;
             user.Username = request.Username ?? user.Username;
+            user.PasswordHash = string.IsNullOrEmpty(user.PasswordHash) ? BCrypt.Net.BCrypt.HashPassword(request.Password) : user.PasswordHash;
 
             await _repository.UpdateUserAsync(user);
             return Result<UserDto>.Ok(_mapper.Map<UserDto>(user));
