@@ -9,12 +9,11 @@ public class ApiResponse<T>
     public static ApiResponse<T> SuccessResponse(T? data) =>
         new ApiResponse<T> { Success = true, Data = data };
 
-    public static ApiResponse<T> ErrorResponse(string code, string message) =>
-        new ApiResponse<T> { Success = false, Error = new ApiError { Code = code, Message = message } };
+    public static ApiResponse<T> ErrorResponse(string message) =>
+        new ApiResponse<T> { Success = false, Error = new ApiError { Message = message } };
 }
 
 public class ApiError
 {
-    public string Code { get; set; } = string.Empty;
     public string Message { get; set; } = string.Empty;
 }

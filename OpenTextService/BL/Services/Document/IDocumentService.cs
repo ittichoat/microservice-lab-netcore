@@ -4,9 +4,9 @@ namespace BL.Services
 {
     public interface IDocumentService
     {
-        Task<Document?> GetDocumentAsync(int id);
-        Task<IEnumerable<Document>> GetAllDocumentsAsync();
-        Task<bool> UploadDocumentAsync(Document doc);
-        Task<bool> DeleteDocumentAsync(int id);
+        Task<int> UploadDocumentAsync(string token, UploadFileRequest form);
+        Task AttachMetadataAsync(string token, int nodeId, MetadataDto metadata);
+        Task<DocumentInfoDto> GetDocumentAsync(string token, int nodeId);
+        Task DeleteDocumentAsync(string token, int nodeId);
     }
 }

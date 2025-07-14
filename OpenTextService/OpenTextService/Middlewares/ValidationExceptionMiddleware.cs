@@ -27,7 +27,6 @@
                 var errors = ex.Errors.Select(e => e.ErrorMessage).ToList();
 
                 var response = ApiResponse<List<string>>.ErrorResponse(
-                    "ValidationError",
                     string.Join("; ", errors)
                 );
 
